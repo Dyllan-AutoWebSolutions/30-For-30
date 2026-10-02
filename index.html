@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0d11">
+<title>Dyllan · 30 for 30</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+<style>
+:root{
+  --bg:#0b0d11; --panel:#12151b; --panel2:#1a1e26; --line:#272c37;
+  --text:#f2f4f7; --mute:#8d95a3;
+  --easy:#5cc437; --int:#ef4b2b; --tempo:#f0a81c; --long:#8a5cd6; --tt:#f0607a; --race:#d42a2a;
+  --str:#3d9bff; --accent:#d8ff3e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.4;padding-bottom:40px}
+body.lock{overflow:hidden}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.wrap{max-width:860px;margin:0 auto;padding:0 12px}
+
+header{position:sticky;top:0;z-index:5;background:#0b0d11;border-bottom:1px solid var(--line)}
+.head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0}
+.brand small{display:block;font-size:10px;letter-spacing:.18em;color:var(--mute);text-transform:uppercase}
+.brand b{font-size:20px;font-weight:900;letter-spacing:-.02em;text-transform:uppercase}
+.brand b i{font-style:normal;color:var(--accent)}
+.count{text-align:right;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.count strong{display:block;font-size:22px;line-height:1;color:var(--text);font-weight:900;letter-spacing:0}
+.todaybtn{background:var(--accent);color:#0b0d11;font-weight:800;font-size:12px;padding:9px 12px;border-radius:8px;text-transform:uppercase;letter-spacing:.06em}
+.dow{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding-bottom:6px;font-size:10px;letter-spacing:.12em;color:var(--mute);text-align:center;text-transform:uppercase}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;padding:12px 0 2px;font-size:11px;color:var(--mute)}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:9px;height:9px;border-radius:2px;display:inline-block}
+
+.week{margin-top:16px}
+.wkhead{display:flex;align-items:baseline;gap:8px;margin-bottom:6px;font-size:11px;color:var(--mute);letter-spacing:.06em;text-transform:uppercase}
+.wkhead b{color:var(--text);font-size:13px;font-weight:900}
+.wkhead .km{margin-left:auto}
+.badge{font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;background:var(--panel2);color:var(--accent);letter-spacing:.1em}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.day{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:8px;min-height:74px;padding:5px 4px 5px 7px;text-align:left;overflow:hidden;display:flex;flex-direction:column;gap:2px}
+.day::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c,transparent)}
+.day:active{background:var(--panel2)}
+.day .d{font-size:13px;font-weight:800}
+.day .d small{font-size:9px;font-weight:600;color:var(--mute);text-transform:uppercase;margin-left:2px}
+.day .km{font-size:11px;font-weight:800;color:var(--c)}
+.day .s{font-size:9px;font-weight:800;color:var(--str);text-transform:uppercase;letter-spacing:.04em}
+.day .s.opt{color:var(--mute)}
+.day .r{font-size:9px;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.day.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.day.done{opacity:.55}
+.day.done::after{content:"✓";position:absolute;right:4px;top:2px;font-size:11px;font-weight:900;color:var(--accent)}
+
+.modal{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.72);display:none;align-items:flex-end;justify-content:center}
+.modal.on{display:flex}
+.sheet{width:100%;max-width:460px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:16px 16px 0 0}
+.card{background:#12151b;padding:18px 16px 16px;color:#f2f4f7}
+.ctop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px}
+.ctop small{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8d95a3;display:block}
+.ctop h2{font-size:24px;font-weight:900;letter-spacing:-.02em;text-transform:uppercase;line-height:1.05}
+.x{width:36px;height:36px;border-radius:50%;background:#1a1e26;font-size:18px;flex:none}
+.blk{background:#1a1e26;border-radius:10px;padding:12px 12px 12px 14px;margin-bottom:10px;border-left:4px solid #3d9bff}
+.blk .lab{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.blk h3{font-size:17px;font-weight:800;margin:2px 0 4px}
+.blk .big{font-size:30px;font-weight:900;line-height:1;letter-spacing:-.02em}
+.blk .big span{font-size:14px;font-weight:700;color:#8d95a3;margin-left:3px}
+.blk p{font-size:13px;color:#b9c0cc;margin-top:6px}
+.tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:4px;background:#272c37;color:#d8ff3e;margin:2px 0 4px}
+.ex{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #272c37}
+.ex b{font-size:14px;font-weight:700;display:block}
+.ex small{font-size:11.5px;color:#8d95a3;display:block}
+.ex .sr{font-size:15px;font-weight:900;white-space:nowrap;color:#f2f4f7;text-align:right}
+.foot{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8d95a3;text-align:center;margin-top:12px}
+.acts{display:grid;grid-template-columns:44px 1fr 1fr 44px;gap:8px;margin-top:14px}
+.acts button{height:46px;border-radius:10px;font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.05em;background:#1a1e26}
+.acts .save{background:#d8ff3e;color:#0b0d11}
+.acts .isdone{background:#272c37;color:#d8ff3e}
+
+@media(min-width:620px){
+  .modal{align-items:center}
+  .sheet{border-radius:16px}
+  .day{min-height:88px;padding:8px 6px 8px 10px}
+  .day .d{font-size:15px}.day .km{font-size:13px}.day .s,.day .r{font-size:10px}
+}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="head">
+    <div class="brand"><small>Dyllan · hybrid plan</small><b>30 <i>for</i> 30</b></div>
+    <div class="count"><strong id="cd">–</strong><span id="cdl">days to race</span></div>
+    <button class="todaybtn" id="goToday">Today</button>
+  </div>
+  <div class="dow"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+</div></header>
+
+<main class="wrap">
+  <div class="legend">
+    <span><i style="background:var(--easy)"></i>Easy</span>
+    <span><i style="background:var(--tempo)"></i>Tempo</span>
+    <span><i style="background:var(--int)"></i>Intervals</span>
+    <span><i style="background:var(--long)"></i>Long</span>
+    <span><i style="background:var(--tt)"></i>Time trial</span>
+    <span><i style="background:var(--race)"></i>Race</span>
+    <span><i style="background:var(--str)"></i>Strength</span>
+  </div>
+  <div id="cal"></div>
+</main>
+
+<div class="modal" id="modal"><div class="sheet"><div class="card" id="card"></div></div></div>
+
+<script>
+/* ---------- DATA ---------- */
+const START = new Date(2026, 9, 5); // Mon 5 Oct 2026
+// [monKm, wedKm, wedName, wedType, thuKm, satKm, satName]
+const W = [
+[3.5,3.5,'Progressive Run','t',3,4,'Long Run'],
+[4,3.9,'400m Repeats','i',3,5,'Long Run'],
+[5,4.4,'Rolling 400s','t',3,6,'Progressive Long Run'],
+[3,3,'Rolling 300s','t',3,5,'Long Run'],
+[5,5,'400s into 200s','i',4,7,'Hotspot Long Run'],
+[5.5,5,'Tempo 2-1','t',4.5,8,'Long Run'],
+[5,5.5,'Rolling 500s','t',5,9,'Progressive Long Run'],
+[5,5,'Drop Set','i',5,6,'Long Run'],
+[6,6.5,'Progressive Run','t',5,10,'Hotspot Long Run'],
+[7,6,'Rolling 400s','t',6.5,11,'Long Run'],
+[7.5,7,'1km Repeats','i',5.5,12,'Progressive Long Run'],
+[5.5,4.9,'2 Mile Time Trial','tt',5,6.5,'Long Run'],
+[7,7.5,'Over and Unders 1km','t',6.5,13,'Long Run'],
+[8,7.4,'800m into 400m Intervals','i',5.5,14,'Hotspot Long Run'],
+[7,6.5,'On Off Ks','t',6,15,'Long Run'],
+[5.5,5,'Tempo 2km','t',5,7.5,'Long Run'],
+[6.5,7.5,'Fast 8-4-2s','i',6.5,17,'Progressive Long Run'],
+[9,6.5,'Tempo 4km','t',6,19,'Long Run'],
+[8,8,'Tempo 2-1-1','t',6,21.1,'Half Marathon Race Practice Long Run'],
+[8,9,'800m Repeats','i',6.5,23,'Long Run'],
+[7,6,'Half Steady, Half Tempo','t',5,11,'Long Run'],
+[10,9,'Tempo 6km','t',6.5,25,'Race Practice Long Run'],
+[10,8,'Mile Repeats','i',9,22,'Long Run'],
+[10,7.5,'Progressive Run','t',9,18,'Hotspot Long Run'],
+[10,6,'Over and Unders 1km','t',7.5,12,'Long Run'],
+[6,6.6,'Race Pace Mile Reps','i',0,30,'30km Race']
+];
+const TYPE = {
+  easy:{label:'Easy run',color:'#5cc437',note:'Conversational pace, about 8:30/km or slower. Walk breaks are fine. If you cannot talk in full sentences, slow down.'},
+  t:{label:'Tempo',color:'#f0a81c',note:'Warm up 5 to 10 min easy, run the faster segments at a comfortably hard effort, cool down easy. Exact segments and paces are in the Runna app.'},
+  i:{label:'Intervals',color:'#ef4b2b',note:'Warm up 10 min easy. Hard reps with recovery between, cool down easy. Exact reps, recoveries and paces are in the Runna app.'},
+  long:{label:'Long run',color:'#8a5cd6',note:'Easy pace unless Runna sets faster segments (progressive, hotspot, race practice). Carry water. Over 75 min, take 30 to 60g carbs per hour.'},
+  tt:{label:'Time trial',color:'#f0607a',note:'Warm up well, then 2 miles (3.2km) at your best even effort. Cool down easy. Runna uses the result to update your paces.'},
+  race:{label:'Race',color:'#d42a2a',note:'30km for 30 years. Start slower than feels right, fuel from 45 min in, and enjoy it. Happy birthday.'}
+};
+const DELOAD = [4,8,12,16,21];
+const SQ=[80,85,90,90,100,102.5,105,105,107.5,110,112.5,112.5,112.5,112.5,112.5,112.5,112.5,112.5,112.5,112.5,110,110,110,110,80,80];
+const BP=[80,82.5,85,85,92.5,95,97.5,97.5,100,102.5,105,105,105,105,105,105,105,105,105,105,102.5,102.5,102.5,102.5,72.5,72.5];
+const DL=[100,105,110,110,115,117.5,120,120,122.5,125,127.5,127.5,120,120,120,120,120,120,120,120];
+const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+const phase = w => w<=4?1 : w<=12?2 : w<=20?3 : w<=24?4 : 5;
+const PNAME = ['','Re-entry','Build','Hold','Peak running','Taper'];
+const isDeload = w => DELOAD.includes(w);
+
+function mainScheme(w){ // sets x reps for squat / bench
+  const p=phase(w); let s=[0,3,4,3,2,2][p], r=[0,8,5,4,5,5][p];
+  if(isDeload(w)) s=Math.ceil(s*0.6);
+  return s+' × '+r;
+}
+function dlScheme(w){ let s=3; if(isDeload(w)) s=2; return s+' × '+(phase(w)===3?4:5); }
+const acc = w => (isDeload(w)||phase(w)>=4)?2:3;
+const rir = w => phase(w)===1?'2 to 3 reps in reserve':phase(w)===5?'Easy, about 70%':'1 to 2 reps in reserve';
+
+function strength(w,d){
+  const a=acc(w), i=w-1, dl=isDeload(w)?'Deload week: same weight, fewer sets.':'';
+  if(w===26){
+    if(d===1) return {title:'Light full body',tag:'Race week',note:'Last lift before the race. Nothing should feel hard. No strength after today.',ex:[
+      ['Back squat','2 × 5',SQ[i]+'kg · easy'],['Bench press','2 × 5',BP[i]+'kg · easy'],['Lat pulldown','2 × 8','Moderate'],
+      ['45° back extension','2 × 12','Bodyweight'],['Dead bug','2 × 10 / side','']]};
+    return null;
+  }
+  if(d===0) return {title:'Lower A · squat focus',tag:PNAME[phase(w)]+(isDeload(w)?' · deload':''),
+    note:'Run first, or split run and lift morning and evening. '+dl+' Home swap: front or goblet squat, kettlebell swing 3 × 15 for the curl.',ex:[
+      ['Back squat',mainScheme(w),SQ[i]+'kg · '+rir(w)],
+      ['Romanian deadlift',a+' × 8',w<=4?'Start 70kg':'Add 2.5kg when all reps are clean'],
+      ['Reverse lunge',a+' × 8 / side',w<=4?'2 × 16kg dumbbells':'Dumbbells, 2 reps in reserve'],
+      ['Hamstring curl',a+' × 10–12',''],
+      ['Standing calf raise',a+' × 12','3 seconds down'],
+      ['Side plank',a+' × 30s / side','']]};
+  if(d===1) return {title:'Upper A · heavy',tag:PNAME[phase(w)]+(isDeload(w)?' · deload':''),
+    note:dl+' Home swap: barbell row for the pulldown, floor press if no bench.',ex:[
+      ['Bench press',mainScheme(w),BP[i]+'kg · '+rir(w)],
+      ['Lat pulldown',(phase(w)===2&&!isDeload(w)?4:a)+' × 8',''],
+      ['Standing overhead press',a+' × 6–8',w<=4?'Start 45kg':'Add 2.5kg when you hit 8s'],
+      ['Chest-supported row',a+' × 10',''],
+      ['Face pull',a+' × 15',''],
+      ['Farmer carry',a+' × 40m','Heavy dumbbells or kettlebells']]};
+  if(d===3){
+    if(w<=20) return {title:'Lower B · hinge and knees',tag:'Moderate'+(isDeload(w)?' · deload':''),
+      note:'Keep this at a moderate effort to protect Saturday. '+dl+' Home swap: barbell glute bridge for the hip thrust.',ex:[
+        ['Deadlift (trap bar or conventional)',dlScheme(w),DL[i]+'kg · 2 to 3 reps in reserve'],
+        ['Hip thrust',a+' × 10',w<=4?'Start 80kg':'Add 5kg when all reps are clean'],
+        ['Lateral step-down',a+' × 8 / side','Slow, 3 seconds down. Your main knee exercise'],
+        ['45° back extension',a+' × 12',''],
+        ['Seated calf raise',a+' × 15',''],
+        ['Dead bug',a+' × 10 / side','']]};
+    if(w<=24) return {title:'Upper and core',tag:'Optional · no leg loading',opt:true,
+      note:'Long runs are at their peak. Skip this if your legs or energy are flat.',ex:[
+        ['Push-up','2 × 12',''],['One-arm dumbbell row','2 × 10 / side',''],['Face pull','2 × 15',''],
+        ['Dead bug','2 × 10 / side',''],['Side plank','2 × 30s / side',''],['Seated calf raise','2 × 15','Light']]};
+    return null;
+  }
+  if(d===4){
+    const light = W[i][5]<=12 && w>2;
+    return {title:'Upper B · volume',opt:true,
+      tag: w<=2?'Optional · easing in, skip if sore':light?'Optional · lighter week, good to add':'Optional · hard week, skip if tired',
+      note:'45 minutes, no leg work, so it never affects the long run. '+dl,ex:[
+        ['Incline dumbbell press',a+' × 10',''],
+        ['One-arm dumbbell row',a+' × 10 / side',''],
+        ['Lateral raise',a+' × 15',''],
+        ['Curl + triceps pushdown superset',a+' × 12',''],
+        ['Ab wheel or plank',a+' sets','']]};
+  }
+  return null;
+}
+function run(w,d){
+  const r=W[w-1];
+  if(d===0) return {km:r[0],name:r[0]+'km Easy Run',t:'easy'};
+  if(d===2) return {km:r[1],name:r[2],t:r[3]};
+  if(d===3 && r[4]) return {km:r[4],name:r[4]+'km Easy Run',t:'easy'};
+  if(d===5) return {km:r[5],name:(w===26?'':r[5]+'km ')+r[6],t:w===26?'race':'long'};
+  return null;
+}
+function restNote(w,d){
+  if(d===6) return 'Full rest. Walk 20 to 30 minutes and stretch calves, hips and hamstrings.';
+  if(w===26 && d===3) return 'Rest. Stay off your feet where you can.';
+  if(w===26 && d===4) return 'Race eve. Walk 15 minutes, eat plenty of carbs, drink water, sleep early.';
+  return 'Rest day.';
+}
+const dateOf=(w,d)=>new Date(2026,9,5+(w-1)*7+d);
+const key=(w,d)=>w+'-'+d;
+
+/* ---------- STATE ---------- */
+let done={};
+try{done=JSON.parse(localStorage.getItem('d30done')||'{}')}catch(e){}
+const saveDone=()=>{try{localStorage.setItem('d30done',JSON.stringify(done))}catch(e){}};
+const now=new Date(); const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+const dayIdx=Math.round((today-START)/864e5);
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+/* ---------- CALENDAR ---------- */
+function renderCal(){
+  let h='';
+  for(let w=1;w<=26;w++){
+    const r=W[w-1], km=(r[0]+r[1]+r[4]+r[5]).toFixed(1).replace('.0','');
+    const ds=dateOf(w,0);
+    h+=`<section class="week" id="w${w}"><div class="wkhead"><b>Week ${w}</b><span>${PNAME[phase(w)]} · ${ds.getDate()} ${MON[ds.getMonth()]}</span>${isDeload(w)?'<span class="badge">Deload</span>':''}<span class="km">${km}km</span></div><div class="grid">`;
+    for(let d=0;d<7;d++){
+      const dt=dateOf(w,d), rn=run(w,d), st=strength(w,d);
+      const cls=['day']; if((w-1)*7+d===dayIdx) cls.push('today'); if(done[key(w,d)]) cls.push('done');
+      const c=rn?TYPE[rn.t].color:(st?'#3d9bff':'transparent');
+      h+=`<button class="${cls.join(' ')}" style="--c:${c}" data-w="${w}" data-d="${d}">
+        <span class="d">${dt.getDate()}${dt.getDate()===1||d===0?`<small>${MON[dt.getMonth()]}</small>`:''}</span>
+        ${rn?`<span class="km">${rn.km}km</span>`:''}
+        ${st?`<span class="s${st.opt?' opt':''}">${st.title.split(' · ')[0].replace(' and core','')}${st.opt?'?':''}</span>`:''}
+        ${!rn&&!st?'<span class="r">Rest</span>':''}</button>`;
+    }
+    h+='</div></section>';
+  }
+  document.getElementById('cal').innerHTML=h;
+}
+
+/* ---------- CARD ---------- */
+let cur=null;
+function openDay(w,d){
+  cur={w,d};
+  const dt=dateOf(w,d), rn=run(w,d), st=strength(w,d);
+  let h=`<div class="ctop"><div><small>Week ${w} of 26 · ${PNAME[phase(w)]}${isDeload(w)?' · Deload':''}</small><h2>${DAYS[d]}<br>${dt.getDate()} ${MON[dt.getMonth()]} ${dt.getFullYear()}</h2></div><button class="x" data-html2canvas-ignore id="close" aria-label="Close">✕</button></div>`;
+  if(rn){
+    const t=TYPE[rn.t];
+    h+=`<div class="blk" style="border-left-color:${t.color}"><div class="lab" style="color:${t.color}">Run · ${t.label}</div>
+      <div class="big">${rn.km}<span>km</span></div><h3>${esc(rn.name)}</h3><p>${t.note}</p></div>`;
+  }
+  if(st){
+    h+=`<div class="blk"><div class="lab" style="color:#3d9bff">Strength${rn?' · same day as run':''}</div><h3>${esc(st.title)}</h3><span class="tag">${esc(st.tag)}</span>`;
+    st.ex.forEach(e=>{h+=`<div class="ex"><div><b>${esc(e[0])}</b>${e[2]?`<small>${esc(e[2])}</small>`:''}</div><div class="sr">${esc(e[1])}</div></div>`});
+    h+=`<p>${esc(st.note.trim())} Add weight next week only when every set hits its reps.</p></div>`;
+  }
+  if(!rn&&!st) h+=`<div class="blk" style="border-left-color:#8d95a3"><div class="lab" style="color:#8d95a3">Rest</div><h3>Recovery</h3><p>${restNote(w,d)}</p></div>`;
+  else if(!rn&&w===26&&d===3) h+='';
+  h+=`<div class="foot">Dyllan · 30 for 30 · race 3 April 2027</div>
+    <div class="acts" data-html2canvas-ignore>
+      <button id="prev" aria-label="Previous day">‹</button>
+      <button class="save" id="save">Save as image</button>
+      <button id="done" class="${done[key(w,d)]?'isdone':''}">${done[key(w,d)]?'Done ✓':'Mark done'}</button>
+      <button id="next" aria-label="Next day">›</button>
+    </div>`;
+  document.getElementById('card').innerHTML=h;
+  document.getElementById('modal').classList.add('on');
+  document.body.classList.add('lock');
+  document.querySelector('.sheet').scrollTop=0;
+}
+function closeDay(){document.getElementById('modal').classList.remove('on');document.body.classList.remove('lock');cur=null}
+function step(n){
+  let i=(cur.w-1)*7+cur.d+n; if(i<0||i>181) return;
+  openDay(Math.floor(i/7)+1,i%7);
+}
+async function saveImage(){
+  const btn=document.getElementById('save');
+  if(!window.html2canvas){alert('The image tool could not load. Check your connection and try again.');return}
+  btn.textContent='Saving…';
+  const wrap=document.createElement('div');
+  wrap.style.cssText='position:fixed;left:-10000px;top:0;width:420px';
+  const clone=document.getElementById('card').cloneNode(true);
+  wrap.appendChild(clone);document.body.appendChild(wrap);
+  try{
+    const canvas=await html2canvas(clone,{backgroundColor:'#12151b',scale:2});
+    const dt=dateOf(cur.w,cur.d);
+    const name=`week${cur.w}-${DAYS[cur.d].toLowerCase()}-${dt.getDate()}${MON[dt.getMonth()]}.png`;
+    canvas.toBlob(async blob=>{
+      const file=new File([blob],name,{type:'image/png'});
+      const touch=window.matchMedia('(pointer:coarse)').matches;
+      if(touch&&navigator.canShare&&navigator.canShare({files:[file]})){
+        try{await navigator.share({files:[file]});btn.textContent='Save as image';return}
+        catch(e){if(e.name==='AbortError'){btn.textContent='Save as image';return}}
+      }
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;
+      document.body.appendChild(a);a.click();a.remove();
+      btn.textContent='Saved';setTimeout(()=>{btn.textContent='Save as image'},1500);
+    },'image/png');
+  }catch(e){alert('Could not create the image.');btn.textContent='Save as image'}
+  finally{wrap.remove()}
+}
+
+/* ---------- EVENTS ---------- */
+document.getElementById('cal').addEventListener('click',e=>{
+  const b=e.target.closest('.day'); if(b) openDay(+b.dataset.w,+b.dataset.d);
+});
+document.getElementById('modal').addEventListener('click',e=>{
+  if(e.target.id==='modal'||e.target.id==='close') return closeDay();
+  if(e.target.id==='prev') return step(-1);
+  if(e.target.id==='next') return step(1);
+  if(e.target.id==='save') return saveImage();
+  if(e.target.id==='done'){
+    const k=key(cur.w,cur.d); if(done[k]) delete done[k]; else done[k]=1;
+    saveDone(); const c=cur; renderCal(); openDay(c.w,c.d);
+  }
+});
+document.addEventListener('keydown',e=>{if(!cur)return;if(e.key==='Escape')closeDay();if(e.key==='ArrowLeft')step(-1);if(e.key==='ArrowRight')step(1)});
+function goToday(open){
+  const i=Math.min(Math.max(dayIdx,0),181), w=Math.floor(i/7)+1;
+  const el=document.getElementById('w'+w);
+  const off=document.querySelector('header').offsetHeight+8;
+  window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-off,behavior:'smooth'});
+  if(open&&dayIdx>=0&&dayIdx<=181) openDay(w,i%7);
+}
+document.getElementById('goToday').addEventListener('click',()=>goToday(true));
+
+/* ---------- INIT ---------- */
+renderCal();
+const race=new Date(2027,3,3), left=Math.round((race-today)/864e5);
+document.getElementById('cd').textContent=left>0?left:left===0?'Today':'Done';
+if(left<=0) document.getElementById('cdl').textContent=left===0?'race day':'30km run';
+if(dayIdx>0) goToday(false);
+</script>
+</body>
+</html>
